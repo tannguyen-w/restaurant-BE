@@ -11,9 +11,16 @@ const userSchema = new mongoose.Schema(
     email: { type: String, unique: true },
     phone: String,
     avatar: String,
-    memberCard: {
+
+    role: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "MemberCard",
+      ref: "Role",
+      required: true, // đảm bảo mỗi user có 1 role
+    },
+
+    restaurant: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Restaurant",
     },
   },
   { timestamps: true }
