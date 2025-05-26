@@ -1,0 +1,40 @@
+{
+  "name": "restaurant",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/server.js"
+  },
+  "author": "tannguyen",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@faker-js/faker": "^9.8.0",
+    "api-query-params": "^5.4.0",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-fileupload": "^1.5.1",
+    "faker": "^6.6.6",
+    "http-status": "^2.1.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.15.0",
+    "mongoose-delete": "^1.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.0",
+    "mysql2": "^3.14.1",
+    "nodemailer": "^7.0.3",
+    "nodemailer-plugin-inline-base64": "^2.1.1",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
