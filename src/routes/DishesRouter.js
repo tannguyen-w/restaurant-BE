@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const dishController = require("../controllers/dishController");
 // const { authMiddleWare } = require("../middleware/auth");
-const { uploadMultiple } = require("../middleware/upload");
+const { uploadMultiple } = require("../middlewares/upload");
 
-router.post("/dish", upload.multipleDishImages, upload.handleUploadError, dishController.createDish);
+// router.post("/dish", upload.multipleDishImages, upload.handleUploadError, dishController.createDish);
 // router.put("/update/:id", authMiddleWare, dishController.updateProduct);
 // router.get("/get-details/:id", dishController.getDetailsProduct);
 // router.delete("/delete/:id", authMiddleWare, dishController.deleteProduct);

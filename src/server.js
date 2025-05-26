@@ -11,7 +11,7 @@ const routes = require("./routes/index");
 const connection = require("./config/database");
 const seedDB = require("./seeder/seed");
 const morgan = require("./config/morgan");
-const { errorConverter, errorHandler } = require("./middleware/error");
+const { errorConverter, errorHandler } = require("./middlewares/error");
 const ApiError = require("./utils/ApiError");
 
 const app = express();
