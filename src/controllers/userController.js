@@ -1,4 +1,5 @@
 const userService = require("../services/userService");
+const fileService = require("../services/fileService");
 
 // Đăng ký cho người dùng thông thường (role luôn là customer)
 const register = async (req, res, next) => {
@@ -10,10 +11,17 @@ const register = async (req, res, next) => {
   }
 };
 
-// Admin tạo user (có quyền gán role)
+// Admin thêm user (phân role và restaurant)
 const createUser = async (req, res, next) => {
   try {
-    const user = await userService.createUser(req.body, req.user);
+    let avatarUrl;
+    if (req.file) {
+      avatarUrl = await fileService.saveSingle(req.file, "avatar");
+    }
+    const user = await userService.createUser({
+      ...req.body,
+      avatar: avatarUrl,
+    });
     res.status(201).json(user);
   } catch (err) {
     next(err);
@@ -27,7 +35,7 @@ const getUsers = async (req, res, next) => {
       page: parseInt(page) || 1,
       limit: parseInt(limit) || 10,
     };
-    const result = await userService.queryUsers(filter, options);
+    const result = await userService.getUsers(filter, options);
     res.json(result);
   } catch (err) {
     next(err);
@@ -45,7 +53,13 @@ const getUser = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    const user = await userService.updateUserById(req.params.id, req.body, req.user);
+    let avatarUrl;
+    if (req.file) {
+      avatarUrl = await fileService.saveSingle(req.file, "avatar");
+    }
+    const updateData = { ...req.body };
+    if (avatarUrl) updateData.avatar = avatarUrl;
+    const user = await userService.updateUserById(req.params.id, updateData);
     res.json(user);
   } catch (err) {
     next(err);
@@ -61,6 +75,53 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+// Cập nhật thông tin cá nhân (ai cũng sửa được của mình)
+const updateProfile = async (req, res, next) => {
+  try {
+    let avatarUrl;
+    if (req.file) {
+      avatarUrl = await fileService.saveSingle(req.file, "avatar");
+    }
+    const updateData = { ...req.body };
+    if (avatarUrl) updateData.avatar = avatarUrl;
+    const user = await userService.updateProfile(req.user._id, updateData);
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Đổi mật khẩu
+const changePassword = async (req, res, next) => {
+  try {
+    await userService.changePassword(req.user._id, req.body.oldPassword, req.body.newPassword);
+    res.json({ message: "Password changed successfully!" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Quên mật khẩu
+const forgotPassword = async (req, res, next) => {
+  try {
+    const token = await userService.forgotPassword(req.body.username);
+    // Thực tế nên gửi token qua email, demo trả về luôn
+    res.json({ message: "Check your email for the reset link", token });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Đặt lại mật khẩu
+const resetPassword = async (req, res, next) => {
+  try {
+    await userService.resetPassword(req.body.token, req.body.newPassword);
+    res.json({ message: "Password reset successfully!" });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   register,
   createUser,
@@ -68,4 +129,8 @@ module.exports = {
   getUser,
   updateUser,
   deleteUser,
+  updateProfile,
+  changePassword,
+  forgotPassword,
+  resetPassword,
 };

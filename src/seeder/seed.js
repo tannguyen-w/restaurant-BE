@@ -27,14 +27,18 @@ const seed = async () => {
 
     const roleCount = await Role.countDocuments();
     if (roleCount === 0) {
-      var [adminRole, managerRole] = await Role.insertMany([
-        { name: "admin", permissions: ["all"] },
-        { name: "manager", permissions: ["manage_orders", "manage_staff"] },
+      var [adminRole, managerRole, staffRole, customerRole] = await Role.insertMany([
+        { name: "admin", description: "admin hệ thống" },
+        { name: "manager", description: "Quản lý nhà hàng" },
+        { name: "staff", description: "Nhân viên nhà hàng" },
+        { name: "customer", description: "Khách hàng nhà hàng" },
       ]);
       console.log("✅ Seeded roles");
     } else {
       adminRole = await Role.findOne({ name: "admin" });
       managerRole = await Role.findOne({ name: "manager" });
+      staffRole = await Role.findOne({ name: "staff" });
+      customerRole = await Role.findOne({ name: "customer" });
     }
 
     let restaurant = await Restaurant.findOne();
@@ -50,18 +54,47 @@ const seed = async () => {
     }
 
     const userCount = await User.countDocuments();
-    let admin;
     if (userCount === 0) {
-      admin = await User.create({
-        username: "admin",
-        password: "admin123",
-        full_name: "Admin",
-        role: adminRole._id,
-        restaurant: restaurant._id,
-      });
-      console.log("✅ Seeded admin user");
+      var [admin, manager, staff, customer] = await User.insertMany([
+        {
+          username: "admin@gmail.com",
+          email: "admin@gmail.com",
+          password: "admin123",
+          full_name: "Admin",
+          role: adminRole._id,
+          restaurant: restaurant._id,
+        },
+        {
+          username: "manager@gmail.com",
+          email: "manager@gmail.com",
+          password: "manager123",
+          full_name: "Manager",
+          role: managerRole._id,
+          restaurant: restaurant._id,
+        },
+        {
+          username: "staff@gmail.com",
+          email: "staff@gmail.com",
+          password: "staff123",
+          full_name: "Staff",
+          role: staffRole._id,
+          restaurant: restaurant._id,
+        },
+        {
+          username: "customer@gmail.com",
+          email: "customer@gmail.com",
+          password: "customer123",
+          full_name: "Customer",
+          role: customerRole._id,
+          restaurant: restaurant._id,
+        },
+      ]);
+      console.log("✅ Seeded users");
     } else {
-      admin = await User.findOne({ username: "admin" });
+      admin = await User.findOne({ email: "admin@gmail.com" });
+      manager = await User.findOne({ email: "manager@gmail.com" });
+      staff = await User.findOne({ email: "staff@gmail.com" });
+      customer = await User.findOne({ email: "customer@gmail.com" });
     }
 
     const tableCount = await Table.countDocuments();
@@ -176,7 +209,7 @@ const seed = async () => {
       const importInvoice = await ImportInvoice.create({
         supplier: supplier._id,
         total_amount: 1000000,
-        staff: admin._id,
+        staff: staff._id,
       });
 
       await ImportInvoiceDetail.insertMany([
@@ -213,7 +246,7 @@ const seed = async () => {
         phone: "0909333222",
         points: 100,
         total_spent: 500000,
-        user: admin._id,
+        user: customer._id, // Sử dụng customer đã tạo
       });
       console.log("✅ Seeded member card");
     }
