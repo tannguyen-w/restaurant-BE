@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Role = require("../models/Role");
 const ApiError = require("../utils/ApiError");
 const httpStatus = require("http-status");
 const bcrypt = require("bcrypt");
@@ -11,7 +12,8 @@ const register = async ({ username, password }) => {
   // Kiểm tra username đã tồn tại
   const existing = await User.findOne({ username });
   if (existing) throw new ApiError(httpStatus.BAD_REQUEST, "Username already exists");
-  const userData = { username, password, role: "customer" };
+  const customerRole = await Role.findOne({ name: "customer" });
+  const userData = { username, password, role: customerRole._id };
   userData.avatar = DEFAULT_AVATAR;
   // Tạo user mới với role customer
   const user = await User.create(userData);
@@ -22,7 +24,8 @@ const register = async ({ username, password }) => {
 const createUser = async (body) => {
   const existing = await User.findOne({ username: body.username });
   if (existing) throw new ApiError(httpStatus.BAD_REQUEST, "Username already exists");
-  if (body.role === "staff" && !body.restaurant) {
+  const staffRole = await Role.findOne({ name: "staff" });
+  if (body.role === staffRole._id && !body.restaurant) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Staff must have a restaurant");
   }
   const userData = { ...body };
@@ -51,9 +54,13 @@ const updateUserById = async (userId, updateBody) => {
 };
 
 const deleteUserById = async (userId) => {
-  const user = await getUserById(userId);
-  await user.delete();
-  return user;
+  let result = await User.deleteById(userId);
+  return result;
+};
+
+const getCustomers = async () => {
+  const customerRole = await Role.findOne({ name: "customer" });
+  return await User.find({ role: customerRole._id });
 };
 
 // Cập nhật thông tin cá nhân (ai cũng sửa được của mình)
@@ -83,7 +90,7 @@ const forgotPassword = async (username) => {
   if (!user) throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   const token = crypto.randomBytes(32).toString("hex");
   user.resetPasswordToken = token;
-  user.resetPasswordExpires = Date.now() + 60 * 60 * 1000;
+  user.resetPasswordExpires = Date.now() + 60 * 60 * 1000 * 24;
   await user.save();
   return token;
 };
@@ -112,4 +119,5 @@ module.exports = {
   changePassword,
   forgotPassword,
   resetPassword,
+  getCustomers,
 };

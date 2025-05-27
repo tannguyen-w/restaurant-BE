@@ -19,18 +19,10 @@ const port = process.env.PORT || 8888;
 const hostname = process.env.HOST_NAME;
 
 app.use(cors());
+
 // config req.body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// File upload
-app.use(
-  fileUpload({
-    limits: { fileSize: 5 * 1024 * 1024 }, // Giới hạn 5MB
-    abortOnLimit: true,
-    responseOnLimit: "File size exceeds the limit",
-  })
-);
 
 // Logging requests trong môi trường development
 if (process.env.NODE_ENV !== "production") {

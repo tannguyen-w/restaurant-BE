@@ -1,5 +1,6 @@
 const userService = require("../services/userService");
 const fileService = require("../services/fileService");
+const Role = require("../models/Role");
 
 // Đăng ký cho người dùng thông thường (role luôn là customer)
 const register = async (req, res, next) => {
@@ -15,13 +16,26 @@ const register = async (req, res, next) => {
 const createUser = async (req, res, next) => {
   try {
     let avatarUrl;
+
     if (req.file) {
       avatarUrl = await fileService.saveSingle(req.file, "avatar");
     }
+
+    let roleId = req.body.role;
+    if (roleId && !roleId.match(/^[0-9a-fA-F]{24}$/)) {
+      const roleDoc = await Role.findOne({ name: roleId });
+      if (!roleDoc) {
+        return res.status(400).json({ message: "Role không hợp lệ" });
+      }
+      roleId = roleDoc._id;
+    }
+
     const user = await userService.createUser({
       ...req.body,
+      role: roleId,
       avatar: avatarUrl,
     });
+
     res.status(201).json(user);
   } catch (err) {
     next(err);
@@ -68,10 +82,21 @@ const updateUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    await userService.deleteUserById(req.params.id);
+    let userId = req.params.id;
+    if (userId === "me") userId = req.user._id;
+    await userService.deleteUserById(userId);
     res.status(204).send();
   } catch (err) {
     next(err);
+  }
+};
+
+const getCustomers = async (req, res, next) => {
+  try {
+    const customers = await userService.getCustomers();
+    res.json(customers);
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -133,4 +158,5 @@ module.exports = {
   changePassword,
   forgotPassword,
   resetPassword,
+  getCustomers,
 };

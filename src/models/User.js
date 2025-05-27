@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Restaurant",
     },
+
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   { timestamps: true }
 );
@@ -31,6 +34,17 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+userSchema.pre("insertMany", async function (next, docs) {
+  for (const doc of docs) {
+    if (doc.password && !doc.password.startsWith("$2")) {
+      // tránh hash 2 lần
+      const salt = await bcrypt.genSalt(10);
+      doc.password = await bcrypt.hash(doc.password, salt);
+    }
+  }
   next();
 });
 

@@ -6,7 +6,7 @@ const path = require("path");
 const fs = require("fs");
 
 // Các thư mục lưu ảnh
-const AVATAR_DIR = path.join(__dirname, "../../public/avatars");
+const AVATAR_DIR = path.join(__dirname, "../public/images/avatars");
 
 // Đảm bảo thư mục tồn tại
 if (!fs.existsSync(AVATAR_DIR)) fs.mkdirSync(AVATAR_DIR, { recursive: true });
@@ -26,17 +26,11 @@ const upload = multer({ storage });
 
 const router = express.Router();
 
-router.post("/register", upload.single("avatar"), userController.register);
+router.post("/register", userController.register);
 
 router.post("/", auth, authorize("admin"), upload.single("avatar"), userController.createUser);
 
 router.get("/", auth, authorize("admin"), userController.getUsers);
-
-router.get("/:id", auth, authorize("admin"), userController.getUser);
-
-router.put("/:id", auth, authorize("admin"), upload.single("avatar"), userController.updateUser);
-
-router.delete("/:id", auth, authorize("admin"), userController.deleteUser);
 
 router.put("/me", auth, upload.single("avatar"), userController.updateProfile);
 
@@ -45,5 +39,13 @@ router.post("/change-password", auth, userController.changePassword);
 router.post("/forgot-password", userController.forgotPassword);
 
 router.post("/reset-password", userController.resetPassword);
+
+router.get("/customers", userController.getCustomers);
+
+router.get("/:id", auth, authorize("admin"), userController.getUser);
+
+router.put("/:id", auth, authorize("admin"), upload.single("avatar"), userController.updateUser);
+
+router.delete("/:id", auth, authorize("admin"), userController.deleteUser);
 
 module.exports = router;

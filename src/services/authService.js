@@ -28,6 +28,7 @@ const createRefreshToken = (user) =>
  */
 exports.login = async ({ username, password }) => {
   const user = await User.findOne({ username });
+
   if (!user || !(await user.comparePassword(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Sai tên đăng nhập hoặc mật khẩu");
   }
