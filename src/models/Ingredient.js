@@ -7,7 +7,6 @@ const ingredientSchema = new mongoose.Schema(
     name: { type: String, required: true },
     current_stock: { type: Number, default: 0 },
     unit: String,
-    image: { type: String },
     category: { type: mongoose.Schema.Types.ObjectId, ref: "IngredientCategory" },
   },
   { timestamps: true }
