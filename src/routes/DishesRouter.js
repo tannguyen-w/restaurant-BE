@@ -1,15 +1,27 @@
 const express = require("express");
-const router = express.Router();
 const dishController = require("../controllers/dishController");
-// const { authMiddleWare } = require("../middleware/auth");
-const { uploadMultiple } = require("../middlewares/upload");
+const { auth, authorize } = require("../middlewares/auth");
+const { multipleDishImages, handleUploadError } = require("../middlewares/upload");
 
-// router.post("/dish", upload.multipleDishImages, upload.handleUploadError, dishController.createDish);
-// router.put("/update/:id", authMiddleWare, dishController.updateProduct);
-// router.get("/get-details/:id", dishController.getDetailsProduct);
-// router.delete("/delete/:id", authMiddleWare, dishController.deleteProduct);
-router.get("/dishes", dishController.getDishes);
-// router.post("/delete-many", authMiddleWare, dishController.deleteMany);
-// router.get("/get-all-type", dishController.getAllType);
+const router = express.Router();
+
+const ALLOW_ROLE = ["staff", "manager", "admin"];
+
+router.post("/", auth, authorize(...ALLOW_ROLE), multipleDishImages, handleUploadError, dishController.createDish);
+
+router.get("/", auth, authorize(...ALLOW_ROLE), dishController.getDishes);
+
+router.get("/:dishId", auth, authorize(...ALLOW_ROLE), dishController.getDish);
+
+router.put(
+  "/:dishId",
+  auth,
+  authorize(...ALLOW_ROLE),
+  multipleDishImages,
+  handleUploadError,
+  dishController.updateDish
+);
+
+router.delete("/:dishId", auth, authorize(...ALLOW_ROLE), dishController.deleteDish);
 
 module.exports = router;

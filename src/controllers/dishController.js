@@ -4,39 +4,43 @@ const dishService = require("../services/dishService");
 const ApiError = require("../utils/ApiError");
 const pick = require("../utils/pick");
 
+// Tạo mới dish (hỗ trợ upload nhiều ảnh)
 const createDish = catchAsync(async (req, res) => {
-  const dishData = JSON.parse(req.body.data);
-  if (req.files && req.files.images) {
-    dishData.images = req.files.images.map((file) => file.path);
-  }
-
-  const dish = await dishService.createDish(req.body);
-  res.status(httpStatus.CREATED).send(dish);
+  const dishData = req.body;
+  const files = req.files;
+  const dish = await dishService.createDish(dishData, files);
+  res.status(201).json(dish);
 });
 
-const getDishes = catchAsync(async (req, res) => {
+// Lấy danh sách dish
+const getDishes = catchAsync(async (req, res, next) => {
   const filter = pick(req.query, ["name", "category", "isCombo"]);
   const options = pick(req.query, ["sortBy", "limit", "page"]);
   const result = await dishService.queryDishes(filter, options);
   res.send(result);
 });
 
-const getDish = catchAsync(async (req, res) => {
-  const dish = await dishService.getDishById(req.params.dishId);
-  if (!dish) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Dish not found");
+// Lấy chi tiết dish
+const getDish = catchAsync(async (req, res, next) => {
+  try {
+    const dish = await dishService.getDishById(req.params.dishId);
+    res.json(dish);
+  } catch (err) {
+    next(err);
   }
-  res.send(dish);
 });
 
+// Cập nhật dish (có thể upload thêm ảnh)
 const updateDish = catchAsync(async (req, res) => {
-  const dish = await dishService.updateDishById(req.params.dishId, req.body);
+  const files = req.files;
+  const dish = await dishService.updateDishById(req.params.dishId, req.body, files);
   res.send(dish);
 });
 
+// Xóa dish
 const deleteDish = catchAsync(async (req, res) => {
   await dishService.deleteDishById(req.params.dishId);
-  res.status(httpStatus.NO_CONTENT).send();
+  res.status(204).send();
 });
 
 module.exports = {

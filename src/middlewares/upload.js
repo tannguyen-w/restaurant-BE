@@ -52,7 +52,7 @@ const uploadConfigs = {
   dishImages: {
     storage: configureStorage("dishes"),
     fileFilter: fileFilter(["image/jpeg", "image/png", "image/webp"]),
-    limits: { files: 10 }, // Tối đa 10 ảnh cho món ăn
+    limits: { files: 6 }, // Tối đa 10 ảnh cho món ăn
   },
   ingredientImage: {
     storage: configureStorage("ingredients"),

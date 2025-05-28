@@ -151,7 +151,7 @@ const seed = async () => {
           price: 120000,
           description: "Gà nướng sả",
           category: mainDishCat._id,
-          is_combo: false,
+          isCombo: false,
           restaurant: restaurant._id,
         },
         {
@@ -159,7 +159,7 @@ const seed = async () => {
           price: 15000,
           description: "Nước ngọt có ga",
           category: drinkCat._id,
-          is_combo: false,
+          isCombo: false,
           restaurant: restaurant._id,
         },
       ]);
@@ -178,11 +178,11 @@ const seed = async () => {
       console.log("✅ Seeded dish ingredients");
     }
 
-    if ((await Dish.countDocuments({ is_combo: true })) === 0) {
+    if ((await Dish.countDocuments({ isCombo: true })) === 0) {
       const comboDish = await Dish.create({
         name: "Combo Gà nướng + Pepsi",
         price: 130000,
-        is_combo: true,
+        isCombo: true,
         restaurant: restaurant._id,
         category: mainDishCat._id,
       });
