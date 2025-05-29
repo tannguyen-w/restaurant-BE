@@ -6,7 +6,7 @@ const orderSchema = new mongoose.Schema(
   {
     customer: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     table: { type: mongoose.Schema.Types.ObjectId, ref: "Table" },
-    status: { type: String, enum: ["pending", "preparing", "served", "cancelled"], default: "pending" },
+    status: { type: String, enum: ["pending", "preparing", "served", "cancelled", "finished"], default: "pending" },
     orderTime: { type: Date, default: Date.now },
   },
   { timestamps: true }
