@@ -6,7 +6,7 @@ const tableSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     capacity: { type: Number, default: 4 },
-    status: { type: String, enum: ["available", "reserved", "occupied"], default: "available" },
+    status: { type: String, enum: ["available", "reserved", "in_use"], default: "available" },
     restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant" },
   },
   { timestamps: true }
