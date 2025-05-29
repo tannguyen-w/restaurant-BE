@@ -15,6 +15,7 @@ const dishIngredient = require("./dishIngredientRouter");
 const reservation = require("./reservationRouter");
 const order = require("./orderRouter");
 const orderDetail = require("./orderDetailRouter");
+const memberCard = require("./memberCardRouter");
 
 const routes = (app) => {
   app.use("/v1/api/role", roleRouter);
@@ -34,6 +35,7 @@ const routes = (app) => {
   app.use("/v1/api/reservation", reservation);
   app.use("/v1/api/order", order);
   app.use("/v1/api/order-detail", orderDetail);
+  app.use("/v1/api/member-card", memberCard);
 };
 
 module.exports = routes;

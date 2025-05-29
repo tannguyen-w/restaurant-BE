@@ -12,7 +12,7 @@ const MemberCardSchema = new mongoose.Schema(
     level: String,
     note: String,
     created_at: { type: Date, default: Date.now },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", unique: true },
   },
   { timestamps: true }
 );
