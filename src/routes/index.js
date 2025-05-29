@@ -8,6 +8,11 @@ const supplierRoute = require("./supplierRoute");
 const ingredientCategoryRoute = require("./ingredientCategoryRouter");
 const ingredientRoute = require("./ingredientRouter");
 const tableRouter = require("./tableRouter");
+const comboRouter = require("./comboRouter");
+const importInvoice = require("./importInvoiceRouter");
+const importInvoiceDetail = require("./importInvoiceDetailRouter");
+const dishIngredient = require("./dishIngredientRouter");
+const reservation = require("./reservationRouter");
 
 const routes = (app) => {
   app.use("/v1/api/role", roleRouter);
@@ -20,6 +25,11 @@ const routes = (app) => {
   app.use("/v1/api/ingredient-category", ingredientCategoryRoute);
   app.use("/v1/api/ingredient", ingredientRoute);
   app.use("/v1/api/table", tableRouter);
+  app.use("/v1/api/combo", comboRouter);
+  app.use("/v1/api/import-invoice", importInvoice);
+  app.use("/v1/api/import-invoice-detail", importInvoiceDetail);
+  app.use("/v1/api/dish-ingredient", dishIngredient);
+  app.use("/v1/api/reservation", reservation);
 };
 
 module.exports = routes;

@@ -9,6 +9,7 @@ const reservationSchema = new mongoose.Schema(
     phone: String,
     reservation_time: Date,
     timeSlot: String,
+    number_of_people: { type: Number, required: true },
     status: { type: String, enum: ["pending", "confirmed", "cancelled"], default: "pending" },
   },
   { timestamps: true }
