@@ -13,6 +13,8 @@ const importInvoice = require("./importInvoiceRouter");
 const importInvoiceDetail = require("./importInvoiceDetailRouter");
 const dishIngredient = require("./dishIngredientRouter");
 const reservation = require("./reservationRouter");
+const order = require("./orderRouter");
+const orderDetail = require("./orderDetailRouter");
 
 const routes = (app) => {
   app.use("/v1/api/role", roleRouter);
@@ -30,6 +32,8 @@ const routes = (app) => {
   app.use("/v1/api/import-invoice-detail", importInvoiceDetail);
   app.use("/v1/api/dish-ingredient", dishIngredient);
   app.use("/v1/api/reservation", reservation);
+  app.use("/v1/api/order", order);
+  app.use("/v1/api/order-detail", orderDetail);
 };
 
 module.exports = routes;
