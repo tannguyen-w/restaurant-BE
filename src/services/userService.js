@@ -9,12 +9,13 @@ const DEFAULT_AVATAR = "../public/images/avatars/default.webp";
 
 // Đăng ký/khởi tạo user với role customer (dành cho user tự đăng ký)
 const register = async ({ username, password }) => {
-  // Kiểm tra username đã tồn tại
   const existing = await User.findOne({ username });
   if (existing) throw new ApiError(httpStatus.BAD_REQUEST, "Username already exists");
   const customerRole = await Role.findOne({ name: "customer" });
   const userData = { username, password, role: customerRole._id };
   userData.avatar = DEFAULT_AVATAR;
+  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(username);
+  userData.email = isEmail ? username : `${username}@gmail.com`;
   // Tạo user mới với role customer
   const user = await User.create(userData);
   return user;
