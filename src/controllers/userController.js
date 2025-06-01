@@ -42,6 +42,19 @@ const createUser = async (req, res, next) => {
   }
 };
 
+const getMe = async (req, res, next) => {
+  try {
+    // req.user được middleware auth gán (id hoặc object user)
+    // Nếu chỉ là id, lấy user từ DB
+    const userId = req.user._id || req.user.id || req.user;
+    const user = await userService.getMe(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getUsers = async (req, res, next) => {
   try {
     const { page, limit, ...filter } = req.query;
@@ -159,4 +172,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   getCustomers,
+  getMe,
 };

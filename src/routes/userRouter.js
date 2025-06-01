@@ -32,6 +32,8 @@ router.post("/", auth, authorize("admin"), upload.single("avatar"), userControll
 
 router.get("/", auth, authorize("admin"), userController.getUsers);
 
+router.get("/me", auth, userController.getMe);
+
 router.put("/me", auth, upload.single("avatar"), userController.updateProfile);
 
 router.post("/change-password", auth, userController.changePassword);

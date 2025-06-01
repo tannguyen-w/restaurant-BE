@@ -39,6 +39,11 @@ const getUsers = async (filter = {}, options = {}) => {
   return User.paginate(filter, options);
 };
 
+const getMe = async (userId) => {
+  // Truy vấn user, loại bỏ password
+  return User.findById(userId).select("-password");
+};
+
 const getUserById = async (id) => {
   const user = await User.findById(id);
   if (!user) throw new ApiError(httpStatus.NOT_FOUND, "User not found");
@@ -121,4 +126,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   getCustomers,
+  getMe,
 };
