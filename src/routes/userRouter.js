@@ -30,7 +30,7 @@ router.post("/register", userController.register);
 
 router.post("/", auth, authorize("admin"), upload.single("avatar"), userController.createUser);
 
-router.get("/", auth, authorize("admin"), userController.getUsers);
+router.get("/", userController.getUsers);
 
 router.get("/me", auth, userController.getMe);
 

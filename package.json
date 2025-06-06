@@ -8,7 +8,6 @@
   },
   "author": "tannguyen",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@faker-js/faker": "^9.8.0",
     "api-query-params": "^5.4.0",
@@ -36,5 +35,14 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tannguyen-w/restaurant-BE.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tannguyen-w/restaurant-BE/issues"
+  },
+  "homepage": "https://github.com/tannguyen-w/restaurant-BE#readme",
+  "description": ""
 }

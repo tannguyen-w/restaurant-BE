@@ -5,7 +5,7 @@ const httpStatus = require("http-status");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 
-const DEFAULT_AVATAR = "../public/images/avatars/default.webp";
+const DEFAULT_AVATAR = "/images/avatars/default.webp";;
 
 // Đăng ký/khởi tạo user với role customer (dành cho user tự đăng ký)
 const register = async ({ username, password }) => {
@@ -41,7 +41,7 @@ const getUsers = async (filter = {}, options = {}) => {
 
 const getMe = async (userId) => {
   // Truy vấn user, loại bỏ password
-  return User.findById(userId).select("-password");
+  return User.findById(userId).select("-password").populate("role").populate("restaurant");
 };
 
 const getUserById = async (id) => {

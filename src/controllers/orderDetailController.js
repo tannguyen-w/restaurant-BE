@@ -6,6 +6,15 @@ const createOrderDetail = catchAsync(async (req, res) => {
   res.status(201).send(detail);
 });
 
+const getAllOrderDetails = catchAsync(async (req, res) => {
+
+  const { page = 1, limit = 20, ...filter } = req.query;
+   const options = { page: parseInt(page), limit: parseInt(limit), sort: { orderTime: -1 } };
+   const result = await orderDetailService.getAllOrderDetails(filter, options);
+   res.send(result);
+})
+
+
 const getDetailsByOrder = catchAsync(async (req, res) => {
   const details = await orderDetailService.getDetailsByOrder(req.params.orderId);
   res.status(201).send(details);
@@ -31,5 +40,5 @@ module.exports = {
   getDetailsByOrder,
   getOrderDetailById,
   updateOrderDetail,
-  deleteOrderDetail,
+  deleteOrderDetail,getAllOrderDetails
 };

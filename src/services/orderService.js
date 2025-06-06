@@ -32,6 +32,11 @@ const createOrder = async (data) => {
   return order;
 };
 
+const getOrdersByCustomer = async (customerId, options = {}) => {
+  const filter = { customer: customerId };
+  return Order.paginate(filter, options);
+};
+
 const getOrders = async (filter = {}, options = {}) => {
   return Order.paginate(filter, options);
 };
@@ -60,5 +65,5 @@ module.exports = {
   getOrders,
   getOrderById,
   updateOrder,
-  deleteOrder,
+  deleteOrder,getOrdersByCustomer
 };

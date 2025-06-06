@@ -43,10 +43,44 @@ const deleteOrder = catchAsync(async (req, res) => {
   res.status(204).send();
 });
 
+const getMyOrders = async (req, res, next) => {
+  try {
+    const customerId = req.user._id;
+    const options = {
+      page: parseInt(req.query.page, 10) || 1,
+      limit: parseInt(req.query.limit, 10) || 10,
+      populate: 'table',
+      sort: { createdAt: -1 }
+    };
+    
+    const result = await orderService.getOrdersByCustomer(customerId, options);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getOrdersByCustomer = async (req, res, next) => {
+  try {
+    const { customerId } = req.params;
+    const options = {
+      page: parseInt(req.query.page, 10) || 1,
+      limit: parseInt(req.query.limit, 10) || 10,
+      populate: 'table',
+      sort: { createdAt: -1 } // Mới nhất trước
+    };
+    
+    const result = await orderService.getOrdersByCustomer(customerId, options);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createOrder,
   getOrders,
   getOrderById,
   updateOrder,
-  deleteOrder,
+  deleteOrder,getMyOrders, getOrdersByCustomer
 };

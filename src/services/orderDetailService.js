@@ -7,6 +7,10 @@ const createOrderDetail = async (data) => {
   return OrderDetail.create(data);
 };
 
+const getAllOrderDetails = async (filter, options) => {
+  return OrderDetail.paginate(filter, options);
+};
+
 // Lấy tất cả chi tiết của 1 order
 const getDetailsByOrder = async (orderId) => {
   return OrderDetail.find({ order: orderId }).populate("dish");
@@ -39,5 +43,5 @@ module.exports = {
   getDetailsByOrder,
   getOrderDetailById,
   updateOrderDetail,
-  deleteOrderDetail,
+  deleteOrderDetail,getAllOrderDetails
 };

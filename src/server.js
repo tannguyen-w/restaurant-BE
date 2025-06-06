@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const httpStatus = require("http-status");
-const fileUpload = require("express-fileupload");
+const cookieParser = require("cookie-parser");
 
 const configViewEngine = require("./config/viewEngine");
 const routes = require("./routes/index");
@@ -18,7 +18,13 @@ const app = express();
 const port = process.env.PORT || 8888;
 const hostname = process.env.HOST_NAME;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // KHÔNG dùng '*'
+    credentials: true,
+  })
+);
+app.use(cookieParser());
 
 // config req.body
 app.use(express.json());

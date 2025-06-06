@@ -6,6 +6,7 @@ const ALLOW_ROLE = ["manager", "admin", "staff"];
 
 router.post("/", auth, authorize(...ALLOW_ROLE), controller.createOrderDetail);
 router.get("/order/:orderId", auth, authorize(...ALLOW_ROLE), controller.getDetailsByOrder);
+router.get("/all", controller.getAllOrderDetails);
 router.get("/:id", auth, authorize(...ALLOW_ROLE), controller.getOrderDetailById);
 router.put("/:id", auth, authorize(...ALLOW_ROLE), controller.updateOrderDetail);
 router.delete("/:id", auth, authorize(...ALLOW_ROLE), controller.deleteOrderDetail);

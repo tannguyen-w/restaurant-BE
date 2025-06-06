@@ -34,10 +34,26 @@ const deleteReservation = async (id) => {
   return resv;
 };
 
+const getMyReservations = async (customerId, options = {}) => {
+  const filter = { customer: customerId };
+  
+  // Đảm bảo chúng ta populate các trường liên quan
+  if (!options.populate) {
+    options.populate = 'table';
+  }
+  
+  // Sắp xếp theo thời gian đặt bàn mới nhất nếu không chỉ định
+  if (!options.sort) {
+    options.sort = { reservationDate: -1, reservationTime: -1 };
+  }
+  
+  return Reservation.paginate(filter, options);
+};
+
 module.exports = {
   createReservation,
   getReservations,
   getReservationById,
   updateReservation,
-  deleteReservation,
+  deleteReservation,getMyReservations
 };

@@ -11,14 +11,16 @@ exports.login = async (req, res) => {
     // Lưu accessToken và refreshToken vào cookie httpOnly
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: false, sameSite: 'lax',
+      // secure: process.env.NODE_ENV === "production",
+      // sameSite: "strict",
       maxAge: 1000 * 60 * 60 * 24, // 1 ngày (hoặc lấy từ env)
     });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: false, sameSite: 'lax',
+      // secure: process.env.NODE_ENV === "production",
+      // sameSite: "strict",
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 ngày (hoặc lấy từ env)
     });
 
@@ -34,13 +36,17 @@ exports.login = async (req, res) => {
 exports.logout = async (req, res) => {
   res.clearCookie("accessToken", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+
+        secure: false, sameSite: 'lax',
+    // secure: process.env.NODE_ENV === "production",
+    // sameSite: "strict",
   });
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+
+        secure: false, sameSite: 'lax'
+    // secure: process.env.NODE_ENV === "production",
+    // sameSite: "strict",
   });
   await AuthService.logout();
   res.json({ message: "Logged out successfully" });
@@ -60,9 +66,11 @@ exports.refreshToken = async (req, res) => {
     const accessToken = jwt.sign(user, process.env.JWT_ACCESS_SECRET, { expiresIn: process.env.JWT_ACCESS_EXPIRE_IN });
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 1000 * 60 * 60 * 24, // 1 ngày
+      secure: false, sameSite: 'lax',
+
+      // secure: process.env.NODE_ENV === "production",
+      // sameSite: "strict",
+      maxAge: 1000 * 60 * 60 * 24 * 10, // 1 ngày
     });
     res.json({ message: "Token refreshed" });
   } catch (error) {

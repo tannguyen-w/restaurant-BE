@@ -3,7 +3,7 @@ const User = require("../models/User");
 
 const auth = async (req, res, next) => {
   // Lấy token từ header
-  const token = req.header("Authorization")?.replace("Bearer ", "");
+  const token = req.cookies && req.cookies.accessToken;
   if (!token) return res.status(401).json({ message: "No token provided" });
 
   try {

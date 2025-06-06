@@ -7,6 +7,13 @@ const createReservation = catchAsync(async (req, res) => {
   res.status(201).send(reservation);
 });
 
+const getMyReservations = catchAsync(async (req, res) => {
+  const customerId = req.user._id; // Lấy ID khách hàng từ token
+  const options = { populate: 'table', sort: { reservation_time: -1 } }; // Sắp xếp theo thời gian đặt bàn mới nhất
+  const reservations = await reservationService.getMyReservations(customerId, options);
+  res.send(reservations);
+});
+
 // Lấy danh sách (phân trang)
 const getReservations = catchAsync(async (req, res) => {
   const { page = 1, limit = 20, ...filter } = req.query;
@@ -38,5 +45,5 @@ module.exports = {
   getReservations,
   getReservationById,
   updateReservation,
-  deleteReservation,
+  deleteReservation,getMyReservations
 };

@@ -9,9 +9,9 @@ const ALLOW_ROLE = ["staff", "manager", "admin"];
 
 router.post("/", auth, authorize(...ALLOW_ROLE), multipleDishImages, handleUploadError, dishController.createDish);
 
-router.get("/", auth, authorize(...ALLOW_ROLE), dishController.getDishes);
+router.get("/", dishController.getDishes);
 
-router.get("/:dishId", auth, authorize(...ALLOW_ROLE), dishController.getDish);
+router.get("/:dishId",  dishController.getDish);
 
 router.put(
   "/:dishId",
