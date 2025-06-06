@@ -69,6 +69,17 @@ const getCustomers = async () => {
   return await User.find({ role: customerRole._id });
 };
 
+const getStaffs = async () => {
+  // Lấy cả role staff và manager
+  const staffRole = await Role.findOne({ name: "staff" });
+  const managerRole = await Role.findOne({ name: "manager" });
+  
+  // Tìm users có role là staff HOẶC manager
+  return await User.find({ 
+    role: { $in: [staffRole._id, managerRole._id] }
+  }).populate("role").populate("restaurant");
+};
+
 // Cập nhật thông tin cá nhân (ai cũng sửa được của mình)
 const updateProfile = async (userId, updateBody) => {
   delete updateBody.role;
@@ -127,4 +138,5 @@ module.exports = {
   resetPassword,
   getCustomers,
   getMe,
+  getStaffs
 };

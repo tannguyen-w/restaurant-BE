@@ -113,6 +113,15 @@ const getCustomers = async (req, res, next) => {
   }
 };
 
+const getStaffs = async (req, res, next) => {
+  try {
+    const staffs = await userService.getStaffs();
+    res.json(staffs);
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Cập nhật thông tin cá nhân (ai cũng sửa được của mình)
 const updateProfile = async (req, res, next) => {
   try {
@@ -173,4 +182,5 @@ module.exports = {
   resetPassword,
   getCustomers,
   getMe,
+  getStaffs
 };

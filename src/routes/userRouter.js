@@ -43,6 +43,7 @@ router.post("/forgot-password", userController.forgotPassword);
 router.post("/reset-password", userController.resetPassword);
 
 router.get("/customers", userController.getCustomers);
+router.get("/staffs", userController.getStaffs);
 
 router.get("/:id", auth, authorize("admin"), userController.getUser);
 
