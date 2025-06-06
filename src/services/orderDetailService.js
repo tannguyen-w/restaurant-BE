@@ -4,7 +4,18 @@ const httpStatus = require("http-status");
 
 // Tạo mới chi tiết order
 const createOrderDetail = async (data) => {
-  return OrderDetail.create(data);
+    // 1. Tạo chi tiết đơn hàng
+  const orderDetail = await OrderDetail.create(data);
+  
+  // 2. Trừ nguyên liệu
+  const recipe = await DishIngredient.find({ dish: orderDetail.dish });
+  for (const ingredient of recipe) {
+    await Ingredient.findByIdAndUpdate(ingredient.ingredient, {
+      $inc: { current_stock: -ingredient.quantity_per_dish * orderDetail.quantity }
+    });
+  }
+  
+  return orderDetail;
 };
 
 const getAllOrderDetails = async (filter, options) => {

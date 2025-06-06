@@ -8,6 +8,10 @@ const orderSchema = new mongoose.Schema(
     table: { type: mongoose.Schema.Types.ObjectId, ref: "Table" },
     status: { type: String, enum: ["pending", "preparing", "served", "cancelled", "finished"], default: "pending" },
     orderTime: { type: Date, default: Date.now },
+    fullName: String,
+    phone: String,
+    address: String,
+    note: String,
   },
   { timestamps: true }
 );

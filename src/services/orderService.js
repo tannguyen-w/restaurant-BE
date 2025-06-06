@@ -18,17 +18,6 @@ const createOrder = async (data) => {
   if (order.table) {
     await Table.findByIdAndUpdate(order.table, { status: "in_use" });
   }
-
-  // 3. Trừ nguyên liệu theo từng OrderDetail
-  const orderDetails = await OrderDetail.find({ order: order._id });
-  for (const detail of orderDetails) {
-    const recipe = await DishIngredient.find({ dish: detail.dish });
-    for (const mat of recipe) {
-      await Ingredient.findByIdAndUpdate(mat.ingredient, {
-        $inc: { current_stock: -mat.quantity_per_dish * detail.quantity_per_dish },
-      });
-    }
-  }
   return order;
 };
 

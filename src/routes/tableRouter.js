@@ -7,11 +7,14 @@ const router = express.Router();
 // Phân quyền cho các role được phép CRUD Table
 const ALLOW_ROLE = ["manager", "admin"];
 
+const ALL_ROLE = ["manager", "admin", "staff", "customer"];
+
 router.post("/", auth, authorize(...ALLOW_ROLE), tableController.createTable);
 
-router.get("/", auth, authorize(...ALLOW_ROLE), tableController.getTables);
+router.get("/", auth, authorize(...ALL_ROLE), tableController.getTables);
+router.get('/available', auth, authorize(...ALL_ROLE),tableController.getAvailableTables);
 
-router.get("/:id", auth, authorize(...ALLOW_ROLE), tableController.getTable);
+router.get("/:id", auth, authorize(...ALL_ROLE), tableController.getTable);
 
 router.put("/:id", auth, authorize(...ALLOW_ROLE), tableController.updateTable);
 

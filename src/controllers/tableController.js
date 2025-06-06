@@ -65,11 +65,21 @@ const getTablesByRestaurant = async (req, res, next) => {
   }
 };
 
+const getAvailableTables = async (req, res, next) => {
+  try {
+    const restaurantId = req.query.restaurantId || null;
+    const tables = await tableService.getAvailableTables(restaurantId);
+    res.json(tables);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   createTable,
   getTables,
   getTable,
   updateTable,
   deleteTable,
-  getTablesByRestaurant,
+  getTablesByRestaurant,getAvailableTables
 };

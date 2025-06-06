@@ -24,6 +24,21 @@ const getTableById = async (id) => {
   return table;
 };
 
+const getAvailableTables = async (additionalFilter = {}, options = {}) => {
+  // Luôn giữ điều kiện status là "available"
+  const filter = { status: "available", ...additionalFilter };
+  
+  // Nếu có restaurantId trong additionalFilter, không cần xử lý riêng nữa
+  
+  // Đảm bảo populate restaurant nếu không được chỉ định
+  if (!options.populate) {
+    options.populate = 'restaurant';
+  }
+  
+  // Sử dụng paginate nếu có, nếu không thì dùng find
+  return Table.paginate ? Table.paginate(filter, options) : Table.find(filter).populate(options.populate);
+};
+
 // Cập nhật Table
 const updateTableById = async (id, updateData) => {
   const table = await getTableById(id);
@@ -50,5 +65,5 @@ module.exports = {
   getTableById,
   updateTableById,
   deleteTableById,
-  getTablesByRestaurant,
+  getTablesByRestaurant,getAvailableTables
 };
