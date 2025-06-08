@@ -21,18 +21,8 @@ const createUser = async (req, res, next) => {
       avatarUrl = await fileService.saveSingle(req.file, "avatar");
     }
 
-    let roleId = req.body.role;
-    if (roleId && !roleId.match(/^[0-9a-fA-F]{24}$/)) {
-      const roleDoc = await Role.findOne({ name: roleId });
-      if (!roleDoc) {
-        return res.status(400).json({ message: "Role không hợp lệ" });
-      }
-      roleId = roleDoc._id;
-    }
-
     const user = await userService.createUser({
       ...req.body,
-      role: roleId,
       avatar: avatarUrl,
     });
 
@@ -182,5 +172,5 @@ module.exports = {
   resetPassword,
   getCustomers,
   getMe,
-  getStaffs
+  getStaffs,
 };
