@@ -10,7 +10,7 @@ const reservationSchema = new mongoose.Schema(
     reservation_time: Date,
     timeSlot: String,
     number_of_people: Number,
-    status: { type: String, enum: ["pending", "confirmed", "cancelled"], default: "pending" },
+    status: { type: String, enum: ["pending", "confirmed", "cancelled", "completed"], default: "pending" },
   },
   { timestamps: true }
 );

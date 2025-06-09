@@ -1,8 +1,5 @@
 const Order = require("../models/Order");
 const Table = require("../models/Table");
-const OrderDetail = require("../models/OrderDetail");
-const Ingredient = require("../models/Ingredient");
-const DishIngredient = require("../models/DishIngredient");
 const ApiError = require("../utils/ApiError");
 const httpStatus = require("http-status");
 
@@ -23,9 +20,28 @@ const createOrder = async (data) => {
 
 const getOrdersByCustomer = async (customerId, options = {}) => {
   const filter = { customer: customerId };
-  return Order.paginate(filter, options);
-};
+  const page = options.page || 1;
+  const limit = options.limit || 10;
+  const skip = (page - 1) * limit;
 
+  // Truy vấn không qua paginate để đảm bảo sort đúng
+  const docs = await Order.find(filter)
+    .sort({ createdAt: -1 }) // Đảm bảo mới nhất đầu tiên
+    .skip(skip)
+    .limit(limit)
+    .populate(options.populate || "");
+
+  // Đếm tổng số document
+  const totalDocs = await Order.countDocuments(filter);
+
+  return {
+    results: docs,
+    page: page,
+    limit: limit,
+    totalPages: Math.ceil(totalDocs / limit),
+    totalResults: totalDocs,
+  };
+};
 const getOrders = async (filter = {}, options = {}) => {
   return Order.paginate(filter, options);
 };
@@ -54,5 +70,6 @@ module.exports = {
   getOrders,
   getOrderById,
   updateOrder,
-  deleteOrder,getOrdersByCustomer
+  deleteOrder,
+  getOrdersByCustomer,
 };

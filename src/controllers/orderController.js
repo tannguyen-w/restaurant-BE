@@ -49,10 +49,10 @@ const getMyOrders = async (req, res, next) => {
     const options = {
       page: parseInt(req.query.page, 10) || 1,
       limit: parseInt(req.query.limit, 10) || 10,
-      populate: 'table',
-      sort: { createdAt: -1 }
+      populate: "table",
+      sort: { createdAt: -1 },
     };
-    
+
     const result = await orderService.getOrdersByCustomer(customerId, options);
     res.json(result);
   } catch (error) {
@@ -66,10 +66,10 @@ const getOrdersByCustomer = async (req, res, next) => {
     const options = {
       page: parseInt(req.query.page, 10) || 1,
       limit: parseInt(req.query.limit, 10) || 10,
-      populate: 'table',
-      sort: { createdAt: -1 } // Mới nhất trước
+      populate: "table",
+      sort: { createdAt: -1 }, // Mới nhất trước
     };
-    
+
     const result = await orderService.getOrdersByCustomer(customerId, options);
     res.json(result);
   } catch (error) {
@@ -82,5 +82,7 @@ module.exports = {
   getOrders,
   getOrderById,
   updateOrder,
-  deleteOrder,getMyOrders, getOrdersByCustomer
+  deleteOrder,
+  getMyOrders,
+  getOrdersByCustomer,
 };

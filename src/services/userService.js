@@ -5,7 +5,7 @@ const httpStatus = require("http-status");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 
-const DEFAULT_AVATAR = "/images/avatars/default.webp";;
+const DEFAULT_AVATAR = "/images/avatars/default.webp";
 
 // Đăng ký/khởi tạo user với role customer (dành cho user tự đăng ký)
 const register = async ({ username, password }) => {
@@ -73,11 +73,13 @@ const getStaffs = async () => {
   // Lấy cả role staff và manager
   const staffRole = await Role.findOne({ name: "staff" });
   const managerRole = await Role.findOne({ name: "manager" });
-  
+
   // Tìm users có role là staff HOẶC manager
-  return await User.find({ 
-    role: { $in: [staffRole._id, managerRole._id] }
-  }).populate("role").populate("restaurant");
+  return await User.find({
+    role: { $in: [staffRole._id, managerRole._id] },
+  })
+    .populate("role")
+    .populate("restaurant");
 };
 
 // Cập nhật thông tin cá nhân (ai cũng sửa được của mình)
@@ -138,5 +140,5 @@ module.exports = {
   resetPassword,
   getCustomers,
   getMe,
-  getStaffs
+  getStaffs,
 };

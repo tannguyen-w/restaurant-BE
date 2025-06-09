@@ -28,6 +28,7 @@ function getLocalPath(type) {
 
 // Lưu 1 file (multerFile) vào đúng thư mục, trả về url public
 const saveSingle = async (multerFile, type = "upload") => {
+  console.log("Saving file:", multerFile);
   if (!multerFile) throw new Error("No file uploaded");
   const ext = path.extname(multerFile.originalname).toLowerCase();
   if (!ALLOWED_EXT.includes(ext)) throw new Error("Invalid file type");

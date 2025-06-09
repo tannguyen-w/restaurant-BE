@@ -9,7 +9,6 @@ const RestaurantSchema = new mongoose.Schema(
     hotline: String,
     email: String,
     opening_hours: String,
-    logoUrl: String,
   },
   { timestamps: true }
 );

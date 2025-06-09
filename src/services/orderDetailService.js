@@ -1,20 +1,22 @@
 const OrderDetail = require("../models/OrderDetail");
 const ApiError = require("../utils/ApiError");
 const httpStatus = require("http-status");
+const DishIngredient = require("../models/DishIngredient");
+const Ingredient = require("../models/Ingredient");
 
 // Tạo mới chi tiết order
 const createOrderDetail = async (data) => {
-    // 1. Tạo chi tiết đơn hàng
+  // 1. Tạo chi tiết đơn hàng
   const orderDetail = await OrderDetail.create(data);
-  
+
   // 2. Trừ nguyên liệu
   const recipe = await DishIngredient.find({ dish: orderDetail.dish });
   for (const ingredient of recipe) {
     await Ingredient.findByIdAndUpdate(ingredient.ingredient, {
-      $inc: { current_stock: -ingredient.quantity_per_dish * orderDetail.quantity }
+      $inc: { current_stock: -ingredient.quantity_per_dish * orderDetail.quantity },
     });
   }
-  
+
   return orderDetail;
 };
 
@@ -22,9 +24,13 @@ const getAllOrderDetails = async (filter, options) => {
   return OrderDetail.paginate(filter, options);
 };
 
-// Lấy tất cả chi tiết của 1 order
 const getDetailsByOrder = async (orderId) => {
-  return OrderDetail.find({ order: orderId }).populate("dish");
+  const data = await OrderDetail.find({ order: orderId }).populate("dish");
+  // Tính tổng tiền
+  const total = data.reduce((sum, detail) => {
+    return sum + (detail.price || 0) * (detail.quantity || 0);
+  }, 0);
+  return { data, total };
 };
 
 // Lấy chi tiết 1 OrderDetail
@@ -54,5 +60,6 @@ module.exports = {
   getDetailsByOrder,
   getOrderDetailById,
   updateOrderDetail,
-  deleteOrderDetail,getAllOrderDetails
+  deleteOrderDetail,
+  getAllOrderDetails,
 };
