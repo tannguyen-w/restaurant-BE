@@ -11,10 +11,6 @@ const createOrder = async (data) => {
   // 1. Tạo order
   const order = await Order.create(data);
 
-  // 2. Đưa bàn vào trạng thái 'in_use'
-  if (order.table) {
-    await Table.findByIdAndUpdate(order.table, { status: "in_use" });
-  }
   return order;
 };
 
@@ -65,6 +61,39 @@ const deleteOrder = async (id) => {
   return order;
 };
 
+const getOrdersByRestaurant = async (restaurantId, options = {}) => {
+  // 1. Lấy tất cả các bàn thuộc nhà hàng này
+  const tables = await Table.find({ restaurant: restaurantId });
+  const tableIds = tables.map((table) => table._id);
+
+  // 2. Lọc đơn hàng theo bàn đã tìm được
+  const filter = { table: { $in: tableIds } };
+
+  // 3. Thêm lọc theo orderType nếu được cung cấp
+  if (options.orderType) {
+    filter.orderType = options.orderType;
+  }
+
+  // 4. Thêm lọc theo status nếu được cung cấp
+  if (options.status) {
+    filter.status = options.status;
+  }
+
+  // 5. Thêm tìm kiếm theo tên hoặc số điện thoại
+  if (options.search && options.search.trim() !== "") {
+    const searchTerm = options.search.trim();
+    filter.$or = [
+      { fullName: { $regex: searchTerm, $options: "i" } },
+      { phone: { $regex: searchTerm, $options: "i" } },
+    ];
+  }
+
+  // 6. Phân trang và sort
+  options.sort = options.sort || { createdAt: -1 };
+
+  return Order.paginate(filter, options);
+};
+
 module.exports = {
   createOrder,
   getOrders,
@@ -72,4 +101,5 @@ module.exports = {
   updateOrder,
   deleteOrder,
   getOrdersByCustomer,
+  getOrdersByRestaurant,
 };

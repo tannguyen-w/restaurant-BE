@@ -11,7 +11,8 @@ router.post("/", auth, authorize(...ALLOW_ROLE), multipleDishImages, handleUploa
 
 router.get("/", dishController.getDishes);
 
-router.get("/:dishId",  dishController.getDish);
+router.get("/:dishId", dishController.getDish);
+router.get("/restaurant/:restaurantId", dishController.getDishesByRestaurant);
 
 router.put(
   "/:dishId",

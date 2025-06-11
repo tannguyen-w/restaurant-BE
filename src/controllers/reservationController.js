@@ -3,13 +3,37 @@ const reservationService = require("../services/reservationService");
 
 // Tạo mới
 const createReservation = catchAsync(async (req, res) => {
-  const reservation = await reservationService.createReservation(req.body);
-  res.status(201).send(reservation);
+  try {
+    const reservationData = req.body;
+
+    // Gán customer là người dùng hiện tại nếu không được chỉ định
+    if (!reservationData.customer && req.user) {
+      reservationData.customer = req.user._id;
+    }
+
+    const reservation = await reservationService.createReservation(reservationData);
+    res.status(201).json(reservation);
+  } catch (err) {
+    next(err);
+  }
+});
+
+const checkTableReservation = catchAsync(async (req, res) => {
+  const { tableId } = req.params;
+  const { reservation_time, timeSlot } = req.query;
+
+  // Kiểm tra xem bàn có còn trống không
+  const isAvailable = await reservationService.checkTableReservation(tableId, reservation_time, timeSlot);
+  res.send(isAvailable);
 });
 
 const getMyReservations = catchAsync(async (req, res) => {
   const customerId = req.user._id; // Lấy ID khách hàng từ token
-  const options = { populate: 'table', sort: { reservation_time: -1 } }; // Sắp xếp theo thời gian đặt bàn mới nhất
+  const options = {
+    page: parseInt(req.query.page, 10) || 1,
+    limit: parseInt(req.query.limit, 10) || 10, // Đảm bảo lấy limit từ query
+    populate: "table",
+  };
   const reservations = await reservationService.getMyReservations(customerId, options);
   res.send(reservations);
 });
@@ -45,5 +69,7 @@ module.exports = {
   getReservations,
   getReservationById,
   updateReservation,
-  deleteReservation,getMyReservations
+  deleteReservation,
+  getMyReservations,
+  checkTableReservation,
 };

@@ -6,6 +6,7 @@ const reservationSchema = new mongoose.Schema(
   {
     customer: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     table: { type: mongoose.Schema.Types.ObjectId, ref: "Table" },
+    restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant" },
     phone: String,
     reservation_time: Date,
     timeSlot: String,

@@ -28,10 +28,16 @@ const deleteInvoice = catchAsync(async (req, res) => {
   res.status(204).send();
 });
 
+const getCheckOrderInvoice = catchAsync(async (req, res) => {
+  const invoice = await invoiceService.getCheckOrderInvoice(req.params.idOrder);
+  res.send(invoice);
+});
+
 module.exports = {
   createInvoice,
   getInvoices,
   getInvoiceById,
   updateInvoice,
   deleteInvoice,
+  getCheckOrderInvoice,
 };

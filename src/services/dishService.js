@@ -50,10 +50,30 @@ const deleteDishById = async (dishId) => {
   return dish;
 };
 
+const getDishesByRestaurant = async (restaurantId, options = {}) => {
+  const filter = { restaurant: restaurantId };
+
+  // Thêm lọc theo category nếu có
+  if (options.categoryId) {
+    filter.category = options.categoryId;
+  }
+
+  // Thêm tìm kiếm theo tên nếu có
+  if (options.name) {
+    filter.name = { $regex: options.name, $options: "i" };
+  }
+
+  // Sắp xếp mặc định theo tên
+  options.sort = options.sort || { name: 1 };
+
+  return Dish.paginate(filter, options);
+};
+
 module.exports = {
   createDish,
   queryDishes,
   getDishById,
   updateDishById,
   deleteDishById,
+  getDishesByRestaurant,
 };

@@ -72,10 +72,34 @@ const deleteInvoice = async (id) => {
   return invoice;
 };
 
+const getCheckOrderInvoice = async (orderId, throwError = false) => {
+  // Kiểm tra đơn hàng tồn tại
+  const order = await Order.findById(orderId);
+  if (!order) {
+    if (throwError) throw new ApiError(httpStatus.NOT_FOUND, "Order not found");
+    return { exists: false, message: "Order not found" };
+  }
+
+  // Tìm hóa đơn liên quan đến đơn hàng
+  const invoice = await Invoice.findOne({ order: orderId });
+
+  if (!invoice) {
+    if (throwError) throw new ApiError(httpStatus.NOT_FOUND, "Invoice not found for this order");
+    return { exists: false, message: "No invoice found for this order" };
+  }
+
+  return {
+    exists: true,
+    invoice: invoice,
+    message: "Invoice exists for this order",
+  };
+};
+
 module.exports = {
   createInvoice,
   getInvoices,
   getInvoiceById,
   updateInvoice,
   deleteInvoice,
+  getCheckOrderInvoice,
 };

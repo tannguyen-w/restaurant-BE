@@ -77,6 +77,26 @@ const getOrdersByCustomer = async (req, res, next) => {
   }
 };
 
+const getOrdersByRestaurant = async (req, res, next) => {
+  try {
+    const { restaurantId } = req.params;
+    const options = {
+      page: parseInt(req.query.page, 10) || 1,
+      limit: parseInt(req.query.limit, 10) || 10,
+      sort: { createdAt: -1 }, // Mới nhất trước
+      orderType: req.query.orderType,
+      status: req.query.status,
+      search: req.query.search || "",
+      populate: req.query.populate || "table,customer",
+    };
+
+    const result = await orderService.getOrdersByRestaurant(restaurantId, options);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createOrder,
   getOrders,
@@ -85,4 +105,5 @@ module.exports = {
   deleteOrder,
   getMyOrders,
   getOrdersByCustomer,
+  getOrdersByRestaurant,
 };

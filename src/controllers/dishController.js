@@ -41,10 +41,29 @@ const deleteDish = catchAsync(async (req, res) => {
   res.status(204).send();
 });
 
+const getDishesByRestaurant = async (req, res, next) => {
+  try {
+    const { restaurantId } = req.params;
+    const options = {
+      page: parseInt(req.query.page, 10) || 1,
+      limit: parseInt(req.query.limit, 10) || 10,
+      populate: req.query.populate || "category",
+      categoryId: req.query.categoryId,
+      name: req.query.name,
+    };
+
+    const result = await dishService.getDishesByRestaurant(restaurantId, options);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createDish,
   getDishes,
   getDish,
   updateDish,
   deleteDish,
+  getDishesByRestaurant,
 };
