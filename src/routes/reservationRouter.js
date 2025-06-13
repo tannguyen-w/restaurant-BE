@@ -13,6 +13,11 @@ router.get("/", auth, authorize(...ALL_ROLE), controller.getReservations);
 router.get("/me", auth, controller.getMyReservations);
 router.get("/:tableId/check-reservation", auth, controller.checkTableReservation);
 
+// Lấy đặt bàn theo nhà hàng
+router.get("/restaurant/:restaurantId", auth, authorize(...ALLOW_ROLE), controller.getReservationsByRestaurant);
+// Cập nhật trạng thái đặt bàn
+router.patch("/:id/status", auth, authorize(...ALLOW_ROLE), controller.updateReservationStatus);
+
 // Lấy chi tiết
 router.get("/:id", auth, authorize(...ALL_ROLE), controller.getReservationById);
 // Cập nhật

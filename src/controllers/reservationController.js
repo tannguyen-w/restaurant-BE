@@ -33,6 +33,7 @@ const getMyReservations = catchAsync(async (req, res) => {
     page: parseInt(req.query.page, 10) || 1,
     limit: parseInt(req.query.limit, 10) || 10, // Đảm bảo lấy limit từ query
     populate: "table",
+    sort: { createAt: -1 },
   };
   const reservations = await reservationService.getMyReservations(customerId, options);
   res.send(reservations);
@@ -40,8 +41,19 @@ const getMyReservations = catchAsync(async (req, res) => {
 
 // Lấy danh sách (phân trang)
 const getReservations = catchAsync(async (req, res) => {
-  const { page = 1, limit = 20, ...filter } = req.query;
-  const options = { page: parseInt(page), limit: parseInt(limit), sort: { reservation_time: -1 } };
+  const filter = {};
+  const options = {
+    page: parseInt(req.query.page, 10) || 1,
+    limit: parseInt(req.query.limit, 10) || 10,
+    populate: req.query.populate || "customer,table,restaurant",
+    search: req.query.search || "",
+    sort: { createdAt: -1 }, // Mới nhất trước
+  };
+
+  if (req.query.status) {
+    filter.status = req.query.status;
+  }
+
   const result = await reservationService.getReservations(filter, options);
   res.send(result);
 });
@@ -64,6 +76,35 @@ const deleteReservation = catchAsync(async (req, res) => {
   res.status(204).send();
 });
 
+//Lấy đặt bàn theo nhà hàng
+const getReservationsByRestaurant = catchAsync(async (req, res) => {
+  const { restaurantId } = req.params;
+  const options = {
+    page: parseInt(req.query.page, 10) || 1,
+    limit: parseInt(req.query.limit, 10) || 10,
+    status: req.query.status,
+    search: req.query.search || "",
+    sort: { createdAt: -1 }, // Mới nhất trước
+  };
+
+  const result = await reservationService.getReservationsByRestaurant(restaurantId, options);
+  res.json(result);
+});
+
+//Cập nhật trạng thái đặt bàn
+const updateReservationStatus = catchAsync(async (req, res) => {
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(httpStatus.BAD_REQUEST).json({
+      message: "Thiếu thông tin trạng thái",
+    });
+  }
+
+  const reservation = await reservationService.updateReservationStatus(req.params.id, status);
+  res.json(reservation);
+});
+
 module.exports = {
   createReservation,
   getReservations,
@@ -72,4 +113,6 @@ module.exports = {
   deleteReservation,
   getMyReservations,
   checkTableReservation,
+  getReservationsByRestaurant,
+  updateReservationStatus,
 };
