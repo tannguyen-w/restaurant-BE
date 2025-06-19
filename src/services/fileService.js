@@ -26,6 +26,7 @@ function getLocalPath(type) {
   return path.resolve(__dirname, "../public" + getPublicPath(type));
 }
 
+
 // Lưu 1 file (multerFile) vào đúng thư mục, trả về url public
 const saveSingle = async (multerFile, type = "upload") => {
   console.log("Saving file:", multerFile);
@@ -50,6 +51,7 @@ const saveMultiple = async (multerFiles, type = "upload") => {
   }
   return urls;
 };
+
 
 module.exports = {
   saveSingle,

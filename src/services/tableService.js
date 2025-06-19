@@ -5,8 +5,6 @@ const httpStatus = require("http-status");
 
 // Tạo mới Table
 const createTable = async (data) => {
-  const restaurantId = await Restaurant.findOne({ name: data.restaurant });
-  data.restaurant = restaurantId._id;
   const exist = await Table.findOne({ name: data.name, restaurant: data.restaurant });
   if (exist) throw new ApiError(httpStatus.BAD_REQUEST, "Table name already exists in this restaurant");
   return Table.create(data);

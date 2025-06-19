@@ -8,7 +8,7 @@ const createInvoice = catchAsync(async (req, res) => {
 
 const getInvoices = catchAsync(async (req, res) => {
   const { page = 1, limit = 20, ...filter } = req.query;
-  const options = { page: parseInt(page), limit: parseInt(limit), sort: { payment_time: -1 } };
+  const options = { page: parseInt(page), limit: parseInt(limit), sort: { payment_time: -1 }, populate: "order" };
   const result = await invoiceService.getInvoices(filter, options);
   res.send(result);
 });

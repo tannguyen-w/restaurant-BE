@@ -9,7 +9,13 @@ const createDishIngredient = async (data) => {
 
 // Lấy tất cả nguyên liệu của một món
 const getByDish = async (dishId) => {
-  return DishIngredient.find({ dish: dishId }).populate("ingredient");
+  return DishIngredient.find({ dish: dishId }).populate({
+      path: 'ingredient',
+      populate: {
+        path: 'category',
+        select: 'name' // Chỉ lấy các trường cần thiết
+      }
+    });;
 };
 
 // Lấy tất cả món dùng một nguyên liệu

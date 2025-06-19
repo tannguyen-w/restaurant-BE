@@ -26,6 +26,8 @@ const upload = multer({ storage });
 
 const router = express.Router();
 
+const ALLOW_ROLE = ["manager", "admin"];
+
 router.post("/register", userController.register);
 
 router.post("/", auth, authorize("admin"), upload.single("avatar"), userController.createUser);
@@ -45,7 +47,7 @@ router.post("/reset-password", userController.resetPassword);
 router.get("/customers", userController.getCustomers);
 router.get("/staffs", userController.getStaffs);
 
-router.get("/:id", auth, authorize("admin"), userController.getUser);
+router.get("/:id", auth, authorize(...ALLOW_ROLE), userController.getUser);
 
 router.put("/:id", auth, authorize("admin"), upload.single("avatar"), userController.updateUser);
 

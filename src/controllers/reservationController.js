@@ -32,7 +32,7 @@ const getMyReservations = catchAsync(async (req, res) => {
   const options = {
     page: parseInt(req.query.page, 10) || 1,
     limit: parseInt(req.query.limit, 10) || 10, // Đảm bảo lấy limit từ query
-    populate: "table",
+    populate: "table restaurant",
     sort: { createAt: -1 },
   };
   const reservations = await reservationService.getMyReservations(customerId, options);

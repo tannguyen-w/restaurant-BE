@@ -17,8 +17,12 @@ const getIngredients = async (req, res, next) => {
     const options = {
       page: parseInt(page) || 1,
       limit: parseInt(limit) || 20,
+      populate: "category"
     };
-    const result = await ingredientService.getIngredients(filter, options);
+
+    const searchName = req.query.name || '';
+    
+    const result = await ingredientService.getIngredients(filter, options, searchName);
     res.json(result);
   } catch (err) {
     next(err);

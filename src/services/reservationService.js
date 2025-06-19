@@ -172,6 +172,7 @@ const getMyReservations = async (customerId, options = {}) => {
   // Đảm bảo chúng ta populate các trường liên quan
   if (!options.populate) {
     options.populate = "table";
+    options.populate = "restaurant";
   }
 
   // Sắp xếp theo thời gian đặt bàn mới nhất nếu không chỉ định

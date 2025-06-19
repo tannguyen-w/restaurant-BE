@@ -26,12 +26,16 @@ const createUser = async (body) => {
   const existing = await User.findOne({ username: body.username });
   if (existing) throw new ApiError(httpStatus.BAD_REQUEST, "Username already exists");
   const staffRole = await Role.findOne({ name: "staff" });
-  if (body.role === staffRole._id && !body.restaurant) {
+  if (body.role === staffRole.id && !body.restaurant) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Staff must have a restaurant");
   }
   const userData = { ...body };
   if (!userData.avatar) userData.avatar = DEFAULT_AVATAR;
+
+  console.log("Creating user with data:", userData);
   const user = await User.create(userData);
+
+
   return user;
 };
 
@@ -45,7 +49,7 @@ const getMe = async (userId) => {
 };
 
 const getUserById = async (id) => {
-  const user = await User.findById(id);
+  const user = await User.findById(id).select("-password").populate("role").populate("restaurant");
   if (!user) throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   return user;
 };
@@ -69,17 +73,24 @@ const getCustomers = async () => {
   return await User.find({ role: customerRole._id });
 };
 
-const getStaffs = async () => {
+const getStaffs = async (filter = {}, options = {}) => {
   // Lấy cả role staff và manager
   const staffRole = await Role.findOne({ name: "staff" });
   const managerRole = await Role.findOne({ name: "manager" });
 
-  // Tìm users có role là staff HOẶC manager
-  return await User.find({
-    role: { $in: [staffRole._id, managerRole._id] },
-  })
-    .populate("role")
-    .populate("restaurant");
+   // Tìm users có role là staff HOẶC manager
+  const staffFilter = { 
+    ...filter,
+    role: { $in: [staffRole._id, managerRole._id] }
+  };
+  
+  // Đảm bảo populate role và restaurant
+  if (!options.populate) {
+    options.populate = 'role restaurant';
+  }
+  
+  // Sử dụng paginate plugin
+  return User.paginate(staffFilter, options);
 };
 
 // Cập nhật thông tin cá nhân (ai cũng sửa được của mình)

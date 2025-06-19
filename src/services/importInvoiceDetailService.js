@@ -10,6 +10,15 @@ const createImportInvoiceDetail = async (data) => {
   return ImportInvoiceDetail.create(data);
 };
 
+const getDetailsAll = async (filter = {}, options = {}) => {
+
+  // Đảm bảo populate cả restaurant và category
+  if (!options.populate) {
+    options.populate = ['ingredient'];
+  }
+  return ImportInvoiceDetail.paginate(filter, options)
+}
+
 /**
  * Lấy tất cả chi tiết của 1 phiếu nhập
  */
@@ -50,5 +59,5 @@ module.exports = {
   getDetailsByInvoice,
   getDetailById,
   updateImportInvoiceDetail,
-  deleteImportInvoiceDetail,
+  deleteImportInvoiceDetail,getDetailsAll
 };

@@ -1,6 +1,7 @@
 const userService = require("../services/userService");
 const fileService = require("../services/fileService");
 const Role = require("../models/Role");
+const { populate } = require("../models/ImportInvoiceDetail");
 
 // Đăng ký cho người dùng thông thường (role luôn là customer)
 const register = async (req, res, next) => {
@@ -51,6 +52,7 @@ const getUsers = async (req, res, next) => {
     const options = {
       page: parseInt(page) || 1,
       limit: parseInt(limit) || 10,
+      populate: "role restaurant",
     };
     const result = await userService.getUsers(filter, options);
     res.json(result);
@@ -105,7 +107,13 @@ const getCustomers = async (req, res, next) => {
 
 const getStaffs = async (req, res, next) => {
   try {
-    const staffs = await userService.getStaffs();
+    const { page, limit, ...filter } = req.query;
+    const options = {
+      page: parseInt(page) || 1,
+      limit: parseInt(limit) || 10,
+      populate: "role restaurant",
+    };
+    const staffs = await userService.getStaffs(filter, options);
     res.json(staffs);
   } catch (error) {
     next(error);

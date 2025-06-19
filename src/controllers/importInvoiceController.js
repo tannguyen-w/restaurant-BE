@@ -14,7 +14,14 @@ const createImportInvoice = catchAsync(async (req, res) => {
  */
 const getImportInvoices = catchAsync(async (req, res) => {
   const { page = 1, limit = 20, ...filter } = req.query;
-  const options = { page: parseInt(page), limit: parseInt(limit), sort: { import_date: -1 } };
+  const options = {
+    page: parseInt(page),
+    limit: parseInt(limit),
+    sort: { import_date: -1 },
+    populate: "supplier staff",
+    search: req.query.search || "",
+  };
+
   const result = await importInvoiceService.getImportInvoices(filter, options);
   res.status(201).send(result);
 });
@@ -23,7 +30,9 @@ const getImportInvoices = catchAsync(async (req, res) => {
  * Lấy chi tiết phiếu nhập kho
  */
 const getImportInvoiceById = catchAsync(async (req, res) => {
-  const invoice = await importInvoiceService.getImportInvoiceById(req.params.id);
+  const invoice = await importInvoiceService.getImportInvoiceById(
+    req.params.id
+  );
   res.status(201).send(invoice);
 });
 
@@ -31,7 +40,10 @@ const getImportInvoiceById = catchAsync(async (req, res) => {
  * Cập nhật phiếu nhập kho
  */
 const updateImportInvoice = catchAsync(async (req, res) => {
-  const invoice = await importInvoiceService.updateImportInvoice(req.params.id, req.body);
+  const invoice = await importInvoiceService.updateImportInvoice(
+    req.params.id,
+    req.body
+  );
   res.status(201).send(invoice);
 });
 

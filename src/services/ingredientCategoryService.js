@@ -10,8 +10,29 @@ const createIngredientCategory = async (data) => {
 };
 
 // Lấy danh sách IngredientCategory (có phân trang nếu có paginate)
-const getIngredientCategories = async (filter = {}, options = {}) => {
-  return IngredientCategory.paginate ? IngredientCategory.paginate(filter, options) : IngredientCategory.find(filter);
+const getIngredientCategories = async (filter = {}, options = {}, searchName = '') => {
+
+  const queryFilter = { ...filter };
+  
+    // Thêm điều kiện tìm kiếm theo tên nếu có
+    if (searchName && searchName.trim()) {
+      queryFilter.name = { $regex: searchName.trim(), $options: 'i' };
+    }
+  
+    // Sử dụng paginate nếu có
+    if (IngredientCategory.paginate) {
+      return IngredientCategory.paginate(queryFilter, options);
+    }
+    
+    // Fallback nếu không có paginate plugin
+    const query = IngredientCategory.find(queryFilter);
+    
+    // Xử lý sắp xếp
+    if (options.sort) {
+      query.sort(options.sort);
+    }
+    
+    return query.exec();
 };
 
 // Lấy chi tiết một IngredientCategory

@@ -13,8 +13,45 @@ const createIngredient = async (data) => {
 };
 
 // Lấy danh sách Ingredient (có phân trang nếu có paginate)
-const getIngredients = async (filter = {}, options = {}) => {
-  return Ingredient.paginate ? Ingredient.paginate(filter, options) : Ingredient.find(filter);
+const getIngredients = async (filter = {}, options = {}, searchName = '') => {
+
+  const queryFilter = { ...filter };
+  
+    // Thêm điều kiện tìm kiếm theo tên nếu có
+    if (searchName && searchName.trim()) {
+      queryFilter.name = { $regex: searchName.trim(), $options: 'i' };
+    }
+  
+    // Đảm bảo populate cả restaurant và category
+    if (!options.populate) {
+      options.populate = [ 'category'];
+    }
+    
+    // Sử dụng paginate nếu có
+    if (Ingredient.paginate) {
+      return Ingredient.paginate(queryFilter, options);
+    }
+    
+    // Fallback nếu không có paginate plugin
+    const query = Ingredient.find(queryFilter);
+    
+    // Xử lý populate
+    if (options.populate) {
+      if (Array.isArray(options.populate)) {
+        options.populate.forEach(path => {
+          query.populate(path);
+        });
+      } else {
+        query.populate(options.populate);
+      }
+    }
+    
+    // Xử lý sắp xếp
+    if (options.sort) {
+      query.sort(options.sort);
+    }
+    
+    return query.exec();
 };
 
 // Lấy chi tiết một Ingredient
