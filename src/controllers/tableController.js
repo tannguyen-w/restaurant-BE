@@ -29,7 +29,7 @@ const getTables = async (req, res, next) => {
 // Lấy chi tiết Table
 const getTable = async (req, res, next) => {
   try {
-    const table = (await tableService.getTableById(req.params.id));
+    const table = await tableService.getTableById(req.params.id);
     res.json(table);
   } catch (err) {
     next(err);
@@ -59,9 +59,14 @@ const deleteTable = async (req, res, next) => {
 // Lấy danh sách table theo nhà hàng
 const getTablesByRestaurant = async (req, res, next) => {
   try {
-    const tables = await tableService.getTablesByRestaurant(req.params.restaurantId,  {
-  populate: 'restaurant'
-});
+    const tables = await tableService.getTablesByRestaurant(
+      req.params.restaurantId,
+      {
+        limit: parseInt(req.query.limit) || 20,
+        page: parseInt(req.query.page) || 1,
+        populate: "restaurant",
+      }
+    );
     res.json(tables);
   } catch (err) {
     next(err);
@@ -84,5 +89,6 @@ module.exports = {
   getTable,
   updateTable,
   deleteTable,
-  getTablesByRestaurant,getAvailableTables
+  getTablesByRestaurant,
+  getAvailableTables,
 };

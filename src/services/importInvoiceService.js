@@ -28,7 +28,7 @@ const createImportInvoice = async (data) => {
       }));
       
       // Tạo tất cả chi tiết phiếu nhập trong transaction
-      await ImportInvoiceDetail.create(detailsWithInvoiceId, { session });
+      await ImportInvoiceDetail.create(detailsWithInvoiceId, { session, ordered: true });
       
       // Cập nhật số lượng nguyên liệu trong transaction
       for (const item of details) {
