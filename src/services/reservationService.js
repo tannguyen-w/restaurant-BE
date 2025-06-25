@@ -72,33 +72,47 @@ const createReservation = async (reservationData) => {
 // Lấy danh sách (có phân trang)
 const getReservations = async (filter = {}, options = {}) => {
   // Xử lý tìm kiếm
+  if (options.status) {
+    filter.status = options.status;
+  }
+
+  if (!options.populate) {
+    options.populate = "table,customer";
+  }
+
+  // Xử lý tìm kiếm theo tên hoặc số điện thoại
   if (options.search && options.search.trim() !== "") {
     const searchTerm = options.search.trim();
 
-    // Khởi tạo mảng điều kiện $or nếu chưa có
-    filter.$or = filter.$or || [];
+    // Khởi tạo mảng các điều kiện tìm kiếm
+    filter.$or = [
+      // Tìm theo số điện thoại trong bảng Reservation
+      { phone: { $regex: searchTerm, $options: "i" } },
+    ];
 
-    // Thêm điều kiện tìm theo số điện thoại
-    filter.$or.push({ phone: { $regex: searchTerm, $options: "i" } });
+    // Tìm kiếm theo tên khách hàng
+    // Cần import User model để tìm theo tên
+    const User = require("../models/User");
+    const matchingUsers = await User.find({
+      full_name: { $regex: searchTerm, $options: "i" },
+    }).select("_id");
 
-    // Tìm kiếm theo tên khách hàng nếu cần
-    if (options.searchByCustomer) {
-      const User = require("../models/User");
-      const matchingUsers = await User.find({
-        fullName: { $regex: searchTerm, $options: "i" },
-      }).select("_id");
+    // Lấy danh sách ID người dùng phù hợp
+    const userIds = matchingUsers.map((user) => user._id);
 
-      const userIds = matchingUsers.map((user) => user._id);
-
-      if (userIds.length > 0) {
-        filter.$or.push({ customer: { $in: userIds } });
-      }
+    if (userIds.length > 0) {
+      // Thêm điều kiện tìm theo ID người dùng
+      filter.$or.push({ customer: { $in: userIds } });
     }
 
     // Nếu không có điều kiện tìm kiếm nào khớp
     if (filter.$or.length === 0) {
       delete filter.$or;
     }
+  }
+
+  if (!options.sort) {
+    options.sort = { reservation_time: -1 };
   }
 
   return Reservation.paginate(filter, options);
@@ -192,7 +206,7 @@ const getReservationsByRestaurant = async (restaurantId, options = {}) => {
   }
 
   if (!options.populate) {
-    options.populate = "table,customer";
+    options.populate = "table,customer,restaurant";
   }
 
   if (options.search && options.search.trim() !== "") {
@@ -212,7 +226,7 @@ const getReservationsByRestaurant = async (restaurantId, options = {}) => {
         // Tìm tất cả customer có tên phù hợp
         const User = require("../models/User");
         const matchingUsers = await User.find({
-          fullName: { $regex: searchTerm, $options: "i" },
+          full_name: { $regex: searchTerm, $options: "i" },
         }).select("_id");
 
         // Lấy danh sách ID người dùng phù hợp
