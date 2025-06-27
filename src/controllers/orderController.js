@@ -14,7 +14,19 @@ const createOrder = catchAsync(async (req, res) => {
  */
 const getOrders = catchAsync(async (req, res) => {
   const { page = 1, limit = 20, ...filter } = req.query;
-  const options = { page: parseInt(page), limit: parseInt(limit), sort: { orderTime: -1 } };
+  const options = {
+    page: parseInt(page),
+    limit: parseInt(limit),
+    sort: { orderTime: -1 },
+    orderType: req.query.orderType,
+    status: req.query.status,
+    populate: [{ path: "table", populate: { path: "restaurant" } }, "customer"],
+    search: req.query.search || "",
+  };
+
+  console.log("Filter:", filter); // Log filter trước khi gửi đến service
+  console.log("Search options:", options.search); // Log search option
+
   const result = await orderService.getOrders(filter, options);
   res.send(result);
 });
@@ -23,7 +35,9 @@ const getOrders = catchAsync(async (req, res) => {
  * Lấy chi tiết order
  */
 const getOrderById = catchAsync(async (req, res) => {
-  const order = await orderService.getOrderById(req.params.id);
+  const order = await orderService.getOrderById(req.params.id, {
+    populate: [{ path: "table", populate: { path: "restaurant" } }, "customer"],
+  });
   res.send(order);
 });
 
@@ -87,7 +101,7 @@ const getOrdersByRestaurant = async (req, res, next) => {
       orderType: req.query.orderType,
       status: req.query.status,
       search: req.query.search || "",
-      populate: req.query.populate || "table,customer",
+      populate: [{ path: "table", populate: { path: "restaurant" } }, "customer"],
     };
 
     const result = await orderService.getOrdersByRestaurant(restaurantId, options);
