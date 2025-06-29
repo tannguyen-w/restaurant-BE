@@ -17,6 +17,7 @@ const order = require("./orderRouter");
 const orderDetail = require("./orderDetailRouter");
 const memberCard = require("./memberCardRouter");
 const invoice = require("./invoiceRouter");
+const dashboardRoute = require("./dashboardRouter");
 
 const routes = (app) => {
   app.use("/v1/api/role", roleRouter);
@@ -38,6 +39,7 @@ const routes = (app) => {
   app.use("/v1/api/order-detail", orderDetail);
   app.use("/v1/api/member-card", memberCard);
   app.use("/v1/api/invoice", invoice);
+  app.use("/v1/api/dashboard", dashboardRoute);
 };
 
 module.exports = routes;
