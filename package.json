@@ -26,7 +26,7 @@
     "mongoose": "^8.15.0",
     "mongoose-delete": "^1.0.2",
     "morgan": "^1.10.0",
-    "multer": "^2.0.0",
+    "multer": "^2.0.1",
     "mysql2": "^3.14.1",
     "nodemailer": "^7.0.3",
     "nodemailer-plugin-inline-base64": "^2.1.1",
