@@ -28,7 +28,7 @@ const getDetailsByOrder = async (orderId) => {
   const data = await OrderDetail.find({ order: orderId }).populate("dish");
   // Tính tổng tiền
   const total = data.reduce((sum, detail) => {
-    return sum + (detail.price || 0) * (detail.quantity || 0);
+    return sum + (detail.price || detail.dish.price || 0) * (detail.quantity || 0);
   }, 0);
   return { data, total };
 };

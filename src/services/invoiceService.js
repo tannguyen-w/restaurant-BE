@@ -8,11 +8,11 @@ const httpStatus = require("http-status");
 
 const createInvoice = async (data) => {
   // 1. Lấy các order detail của order
-  const orderDetails = await OrderDetail.find({ order: data.order });
+  const orderDetails = await OrderDetail.find({ order: data.order }).populate("dish");
   if (!orderDetails.length) throw new ApiError(httpStatus.BAD_REQUEST, "Order has no items");
 
   // 2. Tính tổng tiền món ăn
-  const total_amount = orderDetails.reduce((sum, d) => sum + d.quantity * d.price, 0);
+  const total_amount = orderDetails.reduce((sum, d) => sum + d.quantity * (d.price || d.dish.price), 0);
   data.total_amount = total_amount;
 
   // 3. Tính final_amount
